@@ -14,13 +14,13 @@ export class EnvironmentVariables {
     DB_PORT: number = 5432;
 
     @IsString()
-    DB_USERNAME: string;
+    DB_USER: string;
 
     @IsString()
     DB_PASSWORD: string;
 
     @IsString()
-    DB_DATABASE: string;
+    DB_NAME: string;
 }
 
 export function validateEnvironmentVariables(

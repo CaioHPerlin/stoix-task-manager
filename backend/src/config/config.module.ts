@@ -5,6 +5,8 @@ import { validateEnvironmentVariables } from "./environment-variables";
 @Module({
     imports: [
         NestConfigModule.forRoot({
+            isGlobal: true,
+            cache: true,
             validate: validateEnvironmentVariables,
         }),
     ],
