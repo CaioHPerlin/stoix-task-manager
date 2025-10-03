@@ -5,6 +5,22 @@ export class EnvironmentVariables {
     @IsInt()
     @IsOptional()
     PORT: number = 5000;
+
+    @IsString()
+    DB_HOST: string;
+
+    @IsInt()
+    @IsOptional()
+    DB_PORT: number = 5432;
+
+    @IsString()
+    DB_USERNAME: string;
+
+    @IsString()
+    DB_PASSWORD: string;
+
+    @IsString()
+    DB_DATABASE: string;
 }
 
 export function validateEnvironmentVariables(
