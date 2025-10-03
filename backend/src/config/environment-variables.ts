@@ -1,21 +1,21 @@
 import { plainToInstance } from "class-transformer";
-import { IsInt, IsOptional, validateSync } from "class-validator";
+import { IsInt, IsOptional, IsString, validateSync } from "class-validator";
 
-export class Env {
+export class EnvironmentVariables {
     @IsInt()
     @IsOptional()
     PORT: number = 5000;
 }
 
-export function validate(config: Record<string, unknown>): Env {
-    // transform
-    const transformedConfig = plainToInstance(Env, config, {
+export function validateEnvironmentVariables(
+    config: Record<string, unknown>,
+): EnvironmentVariables {
+    const transformed = plainToInstance(EnvironmentVariables, config, {
         enableImplicitConversion: true,
         exposeDefaultValues: true,
     });
 
-    // validate
-    const errors = validateSync(transformedConfig, {
+    const errors = validateSync(transformed, {
         skipMissingProperties: false,
         whitelist: false,
         forbidUnknownValues: false,
@@ -25,5 +25,5 @@ export function validate(config: Record<string, unknown>): Env {
         throw new Error(errors.toString());
     }
 
-    return transformedConfig;
+    return transformed;
 }
