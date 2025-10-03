@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: stoix-postgres
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  backend:
+    build:
+      context: ./backend
+      target: development
+    container_name: stoix-backend
+    environment:
+      PORT: 5000
+      DB_HOST: postgres
+      DB_PORT: 5432                    
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+    ports:
+      - "${BACKEND_PORT}:5000"      
+    volumes:
+      - ./backend:/app
+      
+volumes:
+  postgres_data:
+    name: stoix-postgres-data

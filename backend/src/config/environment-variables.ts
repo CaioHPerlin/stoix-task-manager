@@ -1,26 +1,32 @@
 import { plainToInstance } from "class-transformer";
-import { IsInt, IsOptional, IsString, validateSync } from "class-validator";
+import { IsInt, IsOptional, IsString, Max, Min, validateSync } from "class-validator";
 
 export class EnvironmentVariables {
+    // App
     @IsInt()
+    @Min(1)
+    @Max(65535)
     @IsOptional()
     PORT: number = 5000;
 
+    // Database
     @IsString()
     DB_HOST: string;
 
     @IsInt()
+    @Min(1)
+    @Max(65535)
     @IsOptional()
     DB_PORT: number = 5432;
 
     @IsString()
-    DB_USER: string;
+    DB_USERNAME: string;
 
     @IsString()
     DB_PASSWORD: string;
 
     @IsString()
-    DB_NAME: string;
+    DB_DATABASE: string;
 }
 
 export function validateEnvironmentVariables(
