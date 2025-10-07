@@ -13,5 +13,5 @@ export class CreateTaskDto {
 
     @IsEnum(TaskStatus)
     @IsOptional()
-    status?: TaskStatus = TaskStatus.PENDING;
+    status?: TaskStatus;
 }
