@@ -16,7 +16,7 @@ import { EnvironmentVariables } from "src/config/environment-variables";
                     password: configService.get("DB_PASSWORD"),
                     database: configService.get("DB_DATABASE"),
                     entities: [__dirname + "/../**/*.entity{.ts,.js}"],
-                    synchronize: false,
+                    synchronize: true, // Note: set to false in production
                 };
             },
         }),
