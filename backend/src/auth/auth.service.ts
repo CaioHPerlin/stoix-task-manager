@@ -1,11 +1,30 @@
 import { Injectable } from "@nestjs/common";
 import { UsersService } from "src/users/users.service";
-import { SignInDto, SignUpDto } from "./dto";
+import { AuthDto, SignInDto, SignUpDto } from "./dto";
 import { UserDto } from "src/users/dto";
+import { JwtService } from "@nestjs/jwt";
+
+class JwtPayload {
+    sub: string;
+    name: string;
+
+    constructor(userDto: UserDto) {
+        this.sub = String(userDto.id);
+        this.name = userDto.name;
+    }
+}
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly usersService: UsersService) {}
+    constructor(
+        private readonly usersService: UsersService,
+        private readonly jwtService: JwtService,
+    ) {}
+
+    private async generateAccessTokenForUser(userDto: UserDto): Promise<string> {
+        const payload = new JwtPayload(userDto);
+        return this.jwtService.signAsync({ ...payload });
+    }
 
     async signUp(signUpDto: SignUpDto): Promise<UserDto> {
         const { email, password, name } = signUpDto;
@@ -13,10 +32,11 @@ export class AuthService {
         return userDto;
     }
 
-    // Promise<true> is temporary while JWT is not in place
-    async signIn(signInDto: SignInDto): Promise<true> {
+    async signIn(signInDto: SignInDto): Promise<AuthDto> {
         const { email, password } = signInDto;
         const userDto = await this.usersService.validateCredentials(email, password);
-        return !!userDto;
+
+        const accessToken = await this.generateAccessTokenForUser(userDto);
+        return { accessToken };
     }
 }

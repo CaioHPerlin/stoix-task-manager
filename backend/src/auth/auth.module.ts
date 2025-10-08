@@ -12,6 +12,7 @@ import { EnvironmentVariables } from "src/config/environment-variables";
             inject: [ConfigService],
             useFactory: (configService: ConfigService<EnvironmentVariables>) => ({
                 secret: configService.get("JWT_SECRET"),
+                signOptions: { expiresIn: "1h" },
             }),
         }),
         UsersModule,
