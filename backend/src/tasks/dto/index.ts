@@ -1,3 +1,3 @@
 export { CreateTaskDto } from "./create-task.dto";
 export { UpdateTaskDto } from "./update-task.dto";
-export { TaskResponseDto } from "./task-response.dto";
+export { TaskDto } from "./task.dto";

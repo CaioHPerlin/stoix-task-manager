@@ -2,26 +2,26 @@ import { Injectable, NotFoundException, BadRequestException } from "@nestjs/comm
 import { InjectRepository } from "@nestjs/typeorm";
 import { Task, TaskStatus } from "./entities/task.entity";
 import { Repository } from "typeorm";
-import { CreateTaskDto, UpdateTaskDto, TaskResponseDto } from "./dto";
+import { CreateTaskDto, UpdateTaskDto, TaskDto } from "./dto";
 
 @Injectable()
 export class TasksService {
     constructor(@InjectRepository(Task) private readonly tasksRepository: Repository<Task>) {}
 
-    async create(createTaskDto: CreateTaskDto): Promise<TaskResponseDto> {
+    async create(createTaskDto: CreateTaskDto): Promise<TaskDto> {
         const task = this.tasksRepository.create(createTaskDto);
         const savedTask = await this.tasksRepository.save(task);
-        return new TaskResponseDto(savedTask);
+        return new TaskDto(savedTask);
     }
 
-    async findAll(): Promise<TaskResponseDto[]> {
+    async findAll(): Promise<TaskDto[]> {
         const tasks = await this.tasksRepository.find({
             order: { createdAt: "DESC" },
         });
-        return tasks.map((task) => new TaskResponseDto(task));
+        return tasks.map((task) => new TaskDto(task));
     }
 
-    async findOne(id: number): Promise<TaskResponseDto> {
+    async findOne(id: number): Promise<TaskDto> {
         if (!id || id <= 0) {
             throw new BadRequestException("Invalid task ID");
         }
@@ -34,10 +34,10 @@ export class TasksService {
             throw new NotFoundException(`Task with ID ${id} not found`);
         }
 
-        return new TaskResponseDto(task);
+        return new TaskDto(task);
     }
 
-    async update(id: number, updateTaskDto: UpdateTaskDto): Promise<TaskResponseDto> {
+    async update(id: number, updateTaskDto: UpdateTaskDto): Promise<TaskDto> {
         if (!id || id <= 0) {
             throw new BadRequestException("Invalid task ID");
         }
@@ -58,7 +58,7 @@ export class TasksService {
         Object.assign(task, updateTaskDto);
         const updatedTask = await this.tasksRepository.save(task);
 
-        return new TaskResponseDto(updatedTask);
+        return new TaskDto(updatedTask);
     }
 
     async remove(id: number): Promise<void> {
@@ -77,7 +77,7 @@ export class TasksService {
         await this.tasksRepository.remove(task);
     }
 
-    async getTasksByStatus(status: string): Promise<TaskResponseDto[]> {
+    async getTasksByStatus(status: string): Promise<TaskDto[]> {
         // validate if status == one of the enum values
         if (!Object.values(TaskStatus).includes(status as TaskStatus)) {
             throw new BadRequestException(
@@ -90,6 +90,6 @@ export class TasksService {
             order: { createdAt: "DESC" },
         });
 
-        return tasks.map((task) => new TaskResponseDto(task));
+        return tasks.map((task) => new TaskDto(task));
     }
 }

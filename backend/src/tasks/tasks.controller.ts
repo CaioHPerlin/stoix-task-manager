@@ -14,7 +14,7 @@ import {
     UsePipes,
 } from "@nestjs/common";
 import { TasksService } from "./tasks.service";
-import { CreateTaskDto, UpdateTaskDto, TaskResponseDto } from "./dto";
+import { CreateTaskDto, UpdateTaskDto, TaskDto } from "./dto";
 import { TaskStatus } from "./entities/task.entity";
 
 @Controller("tasks")
@@ -32,7 +32,7 @@ export class TasksController {
     @HttpCode(HttpStatus.CREATED)
     async create(
         @Body() createTaskDto: CreateTaskDto,
-    ): Promise<{ message: string; data: TaskResponseDto }> {
+    ): Promise<{ message: string; data: TaskDto }> {
         const task = await this.tasksService.create(createTaskDto);
         return {
             message: "Task created successfully",
@@ -43,8 +43,8 @@ export class TasksController {
     @Get()
     async findAll(
         @Query("status") status?: TaskStatus,
-    ): Promise<{ message: string; data: TaskResponseDto[]; count: number }> {
-        let tasks: TaskResponseDto[];
+    ): Promise<{ message: string; data: TaskDto[]; count: number }> {
+        let tasks: TaskDto[];
 
         if (status) {
             tasks = await this.tasksService.getTasksByStatus(status);
@@ -62,7 +62,7 @@ export class TasksController {
     @Get(":id")
     async findOne(
         @Param("id", ParseIntPipe) id: number,
-    ): Promise<{ message: string; data: TaskResponseDto }> {
+    ): Promise<{ message: string; data: TaskDto }> {
         const task = await this.tasksService.findOne(id);
         return {
             message: "Task retrieved successfully",
@@ -74,7 +74,7 @@ export class TasksController {
     async update(
         @Param("id", ParseIntPipe) id: number,
         @Body() updateTaskDto: UpdateTaskDto,
-    ): Promise<{ message: string; data: TaskResponseDto }> {
+    ): Promise<{ message: string; data: TaskDto }> {
         const task = await this.tasksService.update(id, updateTaskDto);
         return {
             message: "Task updated successfully",
