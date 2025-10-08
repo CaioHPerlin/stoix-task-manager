@@ -4,7 +4,10 @@ import { ConfigModule } from "./config/config.module";
 import { DatabaseModule } from "./database/database.module";
 import { TasksModule } from "./tasks/tasks.module";
 
+const coreModules = [ConfigModule, DatabaseModule];
+const featureModules = [HealthModule, TasksModule];
+
 @Module({
-    imports: [HealthModule, ConfigModule, DatabaseModule, TasksModule],
+    imports: [...coreModules, ...featureModules],
 })
 export class AppModule {}
