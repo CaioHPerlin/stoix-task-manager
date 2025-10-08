@@ -5,7 +5,8 @@ import { User } from "./entities/user.entity";
 import { HashingService } from "src/common/hashing/hashing.service";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([User]), HashingService],
-    providers: [UsersService],
+    imports: [TypeOrmModule.forFeature([User])],
+    providers: [UsersService, HashingService],
+    exports: [UsersService],
 })
 export class UsersModule {}
