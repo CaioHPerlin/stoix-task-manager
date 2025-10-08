@@ -2,7 +2,7 @@ import { ConflictException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./entities/user.entity";
 import { Repository } from "typeorm";
-import { HashingService } from "src/common/hashing/hashing.service";
+import { HashingService } from "src/common/providers/hashing.service";
 import { UserDto } from "./dto";
 
 @Injectable()
