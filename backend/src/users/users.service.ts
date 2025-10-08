@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from "@nestjs/common";
+import { ConflictException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./entities/user.entity";
 import { Repository } from "typeorm";
@@ -13,13 +13,12 @@ export class UsersService {
         private readonly hashingService: HashingService,
     ) {}
 
-    async findByEmail(email: string): Promise<UserDto | null> {
-        const user = await this.usersRepository.findOne({ where: { email } });
-        return user ? new UserDto(user) : null;
+    private async findEntityByEmail(email: string): Promise<User | null> {
+        return this.usersRepository.findOne({ where: { email } });
     }
 
     async create(email: string, password: string, name: string): Promise<UserDto> {
-        if (await this.findByEmail(email)) {
+        if (await this.findEntityByEmail(email)) {
             throw new ConflictException("Email already in use");
         }
 
@@ -27,5 +26,19 @@ export class UsersService {
         const newUser = this.usersRepository.create({ email, password: hashedPassword, name });
         await this.usersRepository.save(newUser);
         return new UserDto(newUser);
+    }
+
+    async validateCredentials(email: string, password: string): Promise<UserDto> {
+        const user = await this.findEntityByEmail(email);
+        if (!user) {
+            throw new UnauthorizedException();
+        }
+
+        const isPasswordValid = await this.hashingService.compare(password, user.password);
+        if (!isPasswordValid) {
+            throw new UnauthorizedException();
+        }
+
+        return new UserDto(user);
     }
 }
