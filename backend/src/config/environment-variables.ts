@@ -10,6 +10,10 @@ export class EnvironmentVariables {
     @IsOptional()
     PORT: number = 5000;
 
+    @IsString()
+    @IsNotEmpty()
+    JWT_SECRET: string;
+
     // Database
     @IsString()
     @IsNotEmpty()
