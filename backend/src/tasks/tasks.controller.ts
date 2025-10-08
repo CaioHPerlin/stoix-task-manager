@@ -18,13 +18,6 @@ import { CreateTaskDto, UpdateTaskDto, TaskDto } from "./dto";
 import { TaskStatus } from "./entities/task.entity";
 
 @Controller("tasks")
-@UsePipes(
-    new ValidationPipe({
-        whitelist: true,
-        forbidNonWhitelisted: true,
-        transform: true,
-    }),
-)
 export class TasksController {
     constructor(private readonly tasksService: TasksService) {}
 
