@@ -56,7 +56,7 @@ export class TasksController {
     async findOne(
         @Param("id", ParseIntPipe) id: number,
     ): Promise<{ message: string; data: TaskDto }> {
-        const task = await this.tasksService.findOne(id);
+        const task = await this.tasksService.findOneById(id);
         return {
             message: "Task retrieved successfully",
             data: task,

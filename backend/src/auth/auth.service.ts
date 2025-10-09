@@ -30,4 +30,8 @@ export class AuthService {
         const accessToken = await this.generateAccessTokenForUser(userDto);
         return { accessToken };
     }
+
+    async getProfile(userId: number): Promise<UserDto> {
+        return this.usersService.findOneById(userId);
+    }
 }

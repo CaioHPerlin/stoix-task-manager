@@ -21,7 +21,7 @@ export class TasksService {
         return tasks.map((task) => new TaskDto(task));
     }
 
-    async findOne(id: number): Promise<TaskDto> {
+    async findOneById(id: number): Promise<TaskDto> {
         if (!id || id <= 0) {
             throw new BadRequestException("Invalid task ID");
         }
