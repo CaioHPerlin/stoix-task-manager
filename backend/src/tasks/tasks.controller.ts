@@ -9,13 +9,12 @@ import {
     HttpCode,
     HttpStatus,
     Query,
-    ValidationPipe,
     ParseIntPipe,
-    UsePipes,
 } from "@nestjs/common";
 import { TasksService } from "./tasks.service";
 import { CreateTaskDto, UpdateTaskDto, TaskDto } from "./dto";
 import { TaskStatus } from "./entities/task.entity";
+import { User } from "src/common/decorators";
 
 @Controller("tasks")
 export class TasksController {
@@ -24,9 +23,10 @@ export class TasksController {
     @Post()
     @HttpCode(HttpStatus.CREATED)
     async create(
+        @User("sub") userId: string,
         @Body() createTaskDto: CreateTaskDto,
     ): Promise<{ message: string; data: TaskDto }> {
-        const task = await this.tasksService.create(createTaskDto);
+        const task = await this.tasksService.create(+userId, createTaskDto);
         return {
             message: "Task created successfully",
             data: task,
@@ -35,15 +35,12 @@ export class TasksController {
 
     @Get()
     async findAll(
+        @User("sub") userId: string,
         @Query("status") status?: TaskStatus,
     ): Promise<{ message: string; data: TaskDto[]; count: number }> {
         let tasks: TaskDto[];
 
-        if (status) {
-            tasks = await this.tasksService.getTasksByStatus(status);
-        } else {
-            tasks = await this.tasksService.findAll();
-        }
+        tasks = await this.tasksService.list(+userId, status);
 
         return {
             message: "Tasks retrieved successfully",
@@ -54,9 +51,10 @@ export class TasksController {
 
     @Get(":id")
     async findOne(
+        @User("sub") userId: string,
         @Param("id", ParseIntPipe) id: number,
     ): Promise<{ message: string; data: TaskDto }> {
-        const task = await this.tasksService.findOneById(id);
+        const task = await this.tasksService.getById(+userId, id);
         return {
             message: "Task retrieved successfully",
             data: task,
@@ -65,10 +63,11 @@ export class TasksController {
 
     @Patch(":id")
     async update(
+        @User("sub") userId: string,
         @Param("id", ParseIntPipe) id: number,
         @Body() updateTaskDto: UpdateTaskDto,
     ): Promise<{ message: string; data: TaskDto }> {
-        const task = await this.tasksService.update(id, updateTaskDto);
+        const task = await this.tasksService.update(+userId, id, updateTaskDto);
         return {
             message: "Task updated successfully",
             data: task,
@@ -77,7 +76,10 @@ export class TasksController {
 
     @Delete(":id")
     @HttpCode(HttpStatus.NO_CONTENT)
-    async remove(@Param("id", ParseIntPipe) id: number): Promise<void> {
-        await this.tasksService.remove(id);
+    async remove(
+        @User("sub") userId: string,
+        @Param("id", ParseIntPipe) id: number,
+    ): Promise<void> {
+        await this.tasksService.remove(+userId, id);
     }
 }
