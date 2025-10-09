@@ -3,16 +3,7 @@ import { UsersService } from "src/users/users.service";
 import { AuthDto, SignInDto, SignUpDto } from "./dto";
 import { UserDto } from "src/users/dto";
 import { JwtService } from "@nestjs/jwt";
-
-class JwtPayload {
-    sub: string;
-    name: string;
-
-    constructor(userDto: UserDto) {
-        this.sub = String(userDto.id);
-        this.name = userDto.name;
-    }
-}
+import { JwtPayload } from "./jwt-payload";
 
 @Injectable()
 export class AuthService {
