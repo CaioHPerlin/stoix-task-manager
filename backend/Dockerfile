@@ -4,13 +4,6 @@ WORKDIR /app
 RUN npm install -g pnpm
 COPY package*.json pnpm-lock.yaml ./
 
-FROM base AS dependencies
-RUN pnpm install --frozen-lockfile
-
-FROM dependencies AS development
-
-COPY . .
-
+FROM base AS development
 EXPOSE 5000
-
-CMD ["pnpm", "run", "start:dev"]
+CMD [ -d "node_modules" ] && pnpm start:dev || pnpm i && pnpm start:dev
